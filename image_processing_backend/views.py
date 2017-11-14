@@ -9,11 +9,11 @@ import base64
 def api_root(request, format=None):
     # get original image from request
     original_image_data = base64.b64decode(request.data['original'])
-    original_image_type = request.data['originalType']
+    original_image_type = request.data['originalImageType']
 
     # get modified image from request
     modified_image_data = base64.b64decode(request.data['modified'])
-    modified_image_type = request.data['modifiedType']
+    modified_image_type = request.data['modifiedImageType']
 
     # write temporary both images on disc
     with open('original.' + original_image_type, 'wb') as f:
@@ -24,6 +24,9 @@ def api_root(request, format=None):
 
     image_diff.find_differences_between_images('original.' + original_image_type, 'modified.' + modified_image_type)
 
-    result_image_data = base64.b64encode('result.jpg')
+    # read result image and send it as a response
+    with open('result.jpg', 'rb') as f:
+        result_image_data = f.read()
+    base64encoded_result = base64.b64encode(result_image_data)
 
-    return Response('post request', 200, None, None, 'application/json')
+    return Response(base64encoded_result, 200, None, None, 'application/json')
