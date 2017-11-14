@@ -1,6 +1,5 @@
 # import the necessary packages
 from skimage.measure import compare_ssim
-import argparse
 import imutils
 import cv2
 from PIL import Image
@@ -13,26 +12,21 @@ def resize_image(wanted_width, image):
     return image.resize((basewidth, hsize), Image.ANTIALIAS)
 
 
-def find_differences_between_images():
-    # construct the argument parse and parse the arguments
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-f", "--first", required=True, help="first input image")
-    ap.add_argument("-s", "--second", required=True, help="second")
-    args = vars(ap.parse_args())
+def find_differences_between_images(original_image_name, modifed_image_name):
 
     # resize image A to smaller
-    imgA = Image.open(args["first"])
+    imgA = Image.open(original_image_name)
     imgA = resize_image(1920, imgA)
-    imgA.save("first.jpg")
+    imgA.save("original.jpg")
 
     # resize image B to smaller
-    imgB = Image.open(args["second"])
+    imgB = Image.open(modifed_image_name)
     imgB = resize_image(1920, imgB)
-    imgB.save("second.jpg")
+    imgB.save("modified.jpg")
 
     # load the two input images
-    imageA = cv2.imread("first.jpg")
-    imageB = cv2.imread("second.jpg")
+    imageA = cv2.imread("original.jpg")
+    imageB = cv2.imread("modified.jpg")
 
     # convert the images to greyscale
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
@@ -48,21 +42,21 @@ def find_differences_between_images():
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
     # draw final image (with differences between the two uploaded images (no rectangles)
-    finalImage = cv2.imread("second.jpg")
+    finalImage = cv2.imread("modified.jpg")
     cv2.drawContours(finalImage, cnts, -1, (0, 0, 255), 2)
-    cv2.imwrite("additional.jpg", finalImage)
+    cv2.imwrite("result.jpg", finalImage)
 
     # draw final image 2 (with rectangles)
     # loop over the contours
-    for c in cnts:
-        # compute the bounding box of the contour and then draw the bounding box on both input images to represent where the two images differ
-        (x, y, w, h) = cv2.boundingRect(c)
-        cv2.rectangle(imageA, (x, y), (x + w, y + h), (0, 0, 255), 1)
-        cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), 2)
-
-    cv2.imwrite("checked-original.jpg", imageA)
-    cv2.imwrite("checked-modified.jpg", imageB)
-    cv2.waitKey(1)
+    # for c in cnts:
+    #     # compute the bounding box of the contour and then draw the bounding box on both input images to represent where the two images differ
+    #     (x, y, w, h) = cv2.boundingRect(c)
+    #     cv2.rectangle(imageA, (x, y), (x + w, y + h), (0, 0, 255), 1)
+    #     cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), 2)
+    #
+    # cv2.imwrite("checked-original.jpg", imageA)
+    # cv2.imwrite("checked-modified.jpg", imageB)
+    # cv2.waitKey(1)
 
 # show the output images
 # cv2.imshow("Original", imageA)
