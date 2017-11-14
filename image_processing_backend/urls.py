@@ -18,5 +18,5 @@ from django.conf.urls import url
 from image_processing_backend import views
 
 urlpatterns = [
-    url(r'^api/image/compare', views.api_root)
+    url(r'^api/images-compare', views.api_root)
 ]
