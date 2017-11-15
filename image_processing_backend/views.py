@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from core import image_diff
+from image_processing_backend import utils
 
 import base64
 
@@ -28,5 +29,8 @@ def api_root(request, format=None):
     with open('result.jpg', 'rb') as f:
         result_image_data = f.read()
     base64encoded_result = base64.b64encode(result_image_data)
+
+    # clear used resources
+    utils.remove_created_files()
 
     return Response(base64encoded_result, 200, None, None, 'application/json')
