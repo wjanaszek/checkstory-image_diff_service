@@ -8,11 +8,11 @@ import base64
 @api_view(['POST'])
 def api_root(request, format=None):
     # get original image from request
-    original_image_data = base64.b64decode(request.data['original'])
+    original_image_data = base64.b64decode(request.data['original'] + '=' * (-len(request.data['original']) % 4))
     original_image_type = request.data['originalImageType']
 
     # get modified image from request
-    modified_image_data = base64.b64decode(request.data['modified'])
+    modified_image_data = base64.b64decode(request.data['modified'] + '=' * (-len(request.data['modified']) % 4))
     modified_image_type = request.data['modifiedImageType']
 
     # write temporary both images on disc
