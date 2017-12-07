@@ -12,7 +12,7 @@ def resize_image(wanted_width, image):
     return image.resize((basewidth, hsize), Image.ANTIALIAS)
 
 
-def find_differences_between_images(original_image_name, modifed_image_name):
+def find_differences_between_images(original_image_name, modified_image_name):
 
     # resize image A to smaller
     imgA = Image.open(original_image_name)
@@ -20,7 +20,7 @@ def find_differences_between_images(original_image_name, modifed_image_name):
     imgA.save("original.jpg")
 
     # resize image B to smaller
-    imgB = Image.open(modifed_image_name)
+    imgB = Image.open(modified_image_name)
     imgB = resize_image(1920, imgB)
     imgB.save("modified.jpg")
 
@@ -32,8 +32,13 @@ def find_differences_between_images(original_image_name, modifed_image_name):
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
 
+    # create a CLAHE object (arguments are optional)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    claheGrayA = clahe.apply(grayA)
+    claheGrayB = clahe.apply(grayB)
+
     # compute thr Structural Similarity Index (SSIM) between the two images, ensuring that the difference image is returned
-    (score, diff) = compare_ssim(grayA, grayB, full=True)
+    (score, diff) = compare_ssim(claheGrayA, claheGrayB, full=True)
     diff = (diff * 255).astype("uint8")
     print("SSIM: {}".format(score))
 
