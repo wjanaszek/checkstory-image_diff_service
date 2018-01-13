@@ -20,6 +20,9 @@ def api_root(request, format=None):
     boundingRectangles = request.data['boundingRectangles']
     resize = request.data['resize']
 
+    print('resize ' + resize)
+    print('boundingRectanglse ' + boundingRectangles)
+
     # write temporary both images on disc
     with open('original.' + original_image_type, 'wb') as f:
         f.write(original_image_data)
@@ -28,7 +31,7 @@ def api_root(request, format=None):
         f.write(modified_image_data)
 
     # @TODO add options to comparsion based on request from API
-    image_diff.find_differences_between_images('original.' + original_image_type, 'modified.' + modified_image_type)
+    image_diff.find_differences_between_images('original.' + original_image_type, 'modified.' + modified_image_type, resize, boundingRectangles)
 
     # read result image and send it as a response
     with open('result.jpg', 'rb') as f:

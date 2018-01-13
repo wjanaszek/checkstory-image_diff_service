@@ -12,8 +12,9 @@ def resize_image(wanted_width, image):
     return image.resize((basewidth, hsize), Image.ANTIALIAS)
 
 
-def find_differences_between_images(original_image_name, modifed_image_name, resize=False, boundingRectangles=False, lineThickness=2):
+def find_differences_between_images(original_image_name, modifed_image_name, resize=False, boundingRectangles=True, lineThickness=2):
 
+    print('original image name = ' + original_image_name)
     if resize:
         # resize image A to smaller
         imgA = Image.open(original_image_name)
@@ -53,7 +54,7 @@ def find_differences_between_images(original_image_name, modifed_image_name, res
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
-    if boundingRectangles:
+    if not boundingRectangles:
         # draw final image (with differences between the two uploaded images (no rectangles)
         finalImage = cv2.imread('modified.jpg')
         cv2.drawContours(finalImage, cnts, -1, (0, 0, 255), lineThickness)
@@ -62,6 +63,7 @@ def find_differences_between_images(original_image_name, modifed_image_name, res
         for c in cnts:
             # compute the bounding box of the contour and then draw the bounding box on both input images to represent where the two images differ
             (x, y, w, h) = cv2.boundingRect(c)
-            cv2.rectangle(imageA, (x, y), (x + w, y + h), (0, 0, 255), lineThickness)
-            cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), lineThickness)
-            cv2.imwrite('result.jpg', imageB)
+            if w > 150 and h > 150:
+                cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), lineThickness)
+
+        cv2.imwrite('result.jpg', imageB)
