@@ -34,7 +34,7 @@ def api_root(request, format=None):
     image_diff.find_differences_between_images('original.' + original_image_type, 'modified.' + modified_image_type, resize, boundingRectangles)
 
     # read result image and send it as a response
-    with open('result.jpg', 'rb') as f:
+    with open('result.png', 'rb') as f:
         result_image_data = f.read()
     base64encoded_result = base64.b64encode(result_image_data)
 
