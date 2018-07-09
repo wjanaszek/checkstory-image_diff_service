@@ -5,36 +5,33 @@ from image_processing_backend import utils
 
 import base64
 
+# USAGE: python3 manage.py runserver
+
 
 @api_view(['POST'])
 def api_root(request, format=None):
-    # get original image from request
-    original_image_data = base64.b64decode(request.data['original'] + '=' * (-len(request.data['original']) % 4))
-    original_image_type = request.data['originalImageType']
+    # get first image from request
+    first_image_data = base64.b64decode(request.data['first'] + '=' * (-len(request.data['first']) % 4))
+    first_image_type = request.data['firstType']
 
-    # get modified image from request
-    modified_image_data = base64.b64decode(request.data['modified'] + '=' * (-len(request.data['modified']) % 4))
-    modified_image_type = request.data['modifiedImageType']
+    # get second image from request
+    second_image_data = base64.b64decode(request.data['second'] + '=' * (-len(request.data['second']) % 4))
+    second_image_type = request.data['secondType']
 
-    # get options for comparision
-    boundingRectangles = request.data['boundingRectangles']
-    resize = request.data['resize']
-
-    print('resize ' + resize)
-    print('boundingRectanglse ' + boundingRectangles)
+    sensitivity = request.data['sensitivity']
 
     # write temporary both images on disc
-    with open('original.' + original_image_type, 'wb') as f:
-        f.write(original_image_data)
+    with open('first.' + first_image_type, 'wb') as f:
+        f.write(first_image_data)
 
-    with open('modified.' + modified_image_type, 'wb') as f:
-        f.write(modified_image_data)
+    with open('second.' + second_image_type, 'wb') as f:
+        f.write(second_image_data)
 
     # @TODO add options to comparsion based on request from API
-    image_diff.find_differences_between_images('original.' + original_image_type, 'modified.' + modified_image_type, resize, boundingRectangles)
+    image_diff.find_differences_between_images('first.' + first_image_type, 'second.' + second_image_type, resize, boundingRectangles)
 
     # read result image and send it as a response
-    with open('result.png', 'rb') as f:
+    with open('result.jpg', 'rb') as f:
         result_image_data = f.read()
     base64encoded_result = base64.b64encode(result_image_data)
 

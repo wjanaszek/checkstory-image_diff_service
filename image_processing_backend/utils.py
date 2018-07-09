@@ -1,6 +1,6 @@
 import os
 
-file_names = ['original', 'modified']
+file_names = ['first', 'second']
 image_types = ['jpg', 'jpeg', 'png']
 
 
