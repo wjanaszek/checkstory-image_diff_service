@@ -1,6 +1,8 @@
-import cv2
-from object import Object
 import math
+
+import cv2
+
+from core.object import Object
 
 
 class Image:
@@ -15,10 +17,11 @@ class Image:
         print('searching for ' + object.typeClass)
         matched = []
         for detectedObject in self.detectedObjects:
-            print('\tdistance from ' + detectedObject.typeClass + ' = ' + str(Image.calculate_distance_between_points(detectedObject.xCenter,
-                                                       object.xCenter,
-                                                       detectedObject.yCenter,
-                                                       object.yCenter)))
+            print('\tdistance from ' + detectedObject.typeClass + ' = ' + str(
+                Image.calculate_distance_between_points(detectedObject.xCenter,
+                                                        object.xCenter,
+                                                        detectedObject.yCenter,
+                                                        object.yCenter)))
             if Image.calculate_distance_between_points(detectedObject.xCenter,
                                                        object.xCenter,
                                                        detectedObject.yCenter,

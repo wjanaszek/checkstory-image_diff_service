@@ -1,9 +1,11 @@
+import base64
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from core import image_diff
+
+from core.image_service import ImageService
 from image_processing_backend import utils
 
-import base64
 
 # USAGE: python3 manage.py runserver
 
@@ -20,6 +22,10 @@ def api_root(request, format=None):
 
     sensitivity = request.data['sensitivity']
 
+    first_image_name = 'first.' + first_image_type
+    second_image_name = 'second.' + second_image_type
+
+    # @TODO find a way to not to store this files temporary on disc
     # write temporary both images on disc
     with open('first.' + first_image_type, 'wb') as f:
         f.write(first_image_data)
@@ -27,8 +33,8 @@ def api_root(request, format=None):
     with open('second.' + second_image_type, 'wb') as f:
         f.write(second_image_data)
 
-    # @TODO add options to comparsion based on request from API
-    image_diff.find_differences_between_images('first.' + first_image_type, 'second.' + second_image_type, resize, boundingRectangles)
+    image_service = ImageService(first_image_name, second_image_name, sensitivity)
+    image_service.detect_and_compare_images()
 
     # read result image and send it as a response
     with open('result.jpg', 'rb') as f:
