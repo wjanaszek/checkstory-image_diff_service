@@ -5,6 +5,7 @@
 import cv2
 # import the necessary packages
 import numpy as np
+import os
 
 from core.image import Image
 from core.object import Object
@@ -19,6 +20,14 @@ class ImageService:
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
     def __init__(self, first_image_path: str, second_image_path: str, max_distance: int, confidence=0.2):
+        print(os.listdir())
+        # read result image and send it as a response
+        with open('MobileNetSSD_deploy.prototxt.txt', 'rb') as f:
+            prototxt = f.read()
+
+        with open('MobileNetSSD_deploy.caffemodel', 'rb') as f:
+            model = f.read()
+
         self.net = cv2.dnn.readNetFromCaffe('MobileNetSSD_deploy.prototxt.txt', 'MobileNetSSD_deploy.caffemodel')
         self.firstImagePath = first_image_path
         self.secondImagePath = second_image_path
