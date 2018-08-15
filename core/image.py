@@ -1,13 +1,15 @@
 import math
 
 import cv2
+import numpy as np
 
 from core.object import Object
 
 
 class Image:
-    def __init__(self, path):
-        self.npArray = cv2.imread(path)
+    def __init__(self, image_data):
+        nparr = np.fromstring(image_data, np.uint8)
+        self.npArray = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         self.blob = cv2.dnn.blobFromImage(cv2.resize(self.npArray, (300, 300)), 0.007843, (300, 300), 127.5)
         self.detectedObjects = []
         self.h = self.npArray.shape[:2][0]

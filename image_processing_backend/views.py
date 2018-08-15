@@ -22,18 +22,7 @@ def api_root(request, format=None):
 
     sensitivity = request.data['sensitivity']
 
-    first_image_name = 'first.' + first_image_type
-    second_image_name = 'second.' + second_image_type
-
-    # @TODO find a way to not to store this files temporary on disc
-    # write temporary both images on disc
-    with open('first.' + first_image_type, 'wb') as f:
-        f.write(first_image_data)
-
-    with open('second.' + second_image_type, 'wb') as f:
-        f.write(second_image_data)
-
-    image_service = ImageService(first_image_name, second_image_name, sensitivity)
+    image_service = ImageService(first_image_data, second_image_data, sensitivity)
     image_service.detect_and_compare_images()
 
     # read result image and send it as a response
